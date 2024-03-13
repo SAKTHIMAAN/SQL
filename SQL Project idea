@@ -1,0 +1,95 @@
+--Customer LifeTime Value Analysis
+--To solve the problem of Customer Lifetime Value (CLV) Analysis using SQL, follow the steps below.
+
+SELECT CustomerID, SUM(TransactionAmount) AS TotalRevenue
+FROM Transactions
+GROUP BY CustomerID;
+
+SELECT CustomerID, COUNT(*) AS PurchaseFrequency
+FROM Transactions
+GROUP BY CustomerID;
+
+SELECT CustomerID, AVG(TransactionAmount) AS AvgPurchaseValue
+FROM Transactions
+GROUP BY CustomerID;
+
+--CLV=(Average Purchase Value×Purchase Frequency)−Acquisition Cost
+--Eg of calculating CLV 
+SELECT 
+    CustomerID,
+    AVG(TransactionAmount) AS AvgPurchaseValue,
+    COUNT(*) AS PurchaseFrequency,
+    (AVG(TransactionAmount) * COUNT(*)) - MIN(AcquisitionCost) AS CLV
+FROM 
+    Transactions
+GROUP BY 
+    CustomerID;
+
+SELECT CustomerID, CLV,
+       CASE
+           WHEN CLV >= 1000 THEN 'High Value'
+           WHEN CLV BETWEEN 500 AND 999 THEN 'Medium Value'
+           ELSE 'Low Value'
+       END AS CLVSegment
+FROM CLVTable;
+
+/*
+RFM Analysis
+The next project idea on SQL for Data Science is RFM Analysis. RFM Analysis is a marketing analytics tool used to identify 
+a company’s most valuable customers by examining three specific purchasing behaviours:
+
+how recently a customer has made a purchase (Recency),
+how often they make purchases (Frequency),
+and how much money they spend (Monetary value).
+Recency (R): Calculate how recently each customer made a purchase.
+Frequency (F): Calculate how often each customer makes a purchase.
+Monetary (M): Calculate the total money spent by each customer.
+*/
+
+SELECT CustomerID, MAX(PurchaseDate) AS LastPurchaseDate,
+       DATEDIFF(CURRENT_DATE, MAX(PurchaseDate)) AS Recency
+FROM YourTableName
+GROUP BY CustomerID;
+                                  
+SELECT CustomerID, COUNT(*) AS Frequency
+FROM YourTableName
+GROUP BY CustomerID;
+
+SELECT CustomerID, SUM(TransactionAmount) AS Monetary
+FROM YourTableName
+GROUP BY CustomerID; 
+
+--i would t0 join them together
+SELECT R.CustomerID, R.Recency, F.Frequency, M.Monetary
+FROM (SELECT CustomerID, DATEDIFF(CURRENT_DATE, MAX(PurchaseDate)) AS Recency
+      FROM YourTableName
+      GROUP BY CustomerID) R
+JOIN (SELECT CustomerID, COUNT(*) AS Frequency
+      FROM YourTableName
+      GROUP BY CustomerID) F ON R.CustomerID = F.CustomerID
+JOIN (SELECT CustomerID, SUM(TransactionAmount) AS Monetary
+      FROM YourTableName
+      GROUP BY CustomerID) M ON R.CustomerID = M.CustomerID;
+
+--CASE statement
+SELECT CustomerID,
+       CASE
+           WHEN Recency <= 30 THEN 'High'
+           WHEN Recency BETWEEN 31 AND 60 THEN 'Medium'
+           ELSE 'Low'
+       END AS RecencyScore,
+       CASE
+           WHEN Frequency >= 10 THEN 'High'
+           WHEN Frequency BETWEEN 5 AND 9 THEN 'Medium'
+           ELSE 'Low'
+       END AS FrequencyScore,
+       CASE
+           WHEN Monetary >= 500 THEN 'High'
+           WHEN Monetary BETWEEN 200 AND 499 THEN 'Medium'
+           ELSE 'Low'
+       END AS MonetaryScor
+
+
+
+
+
