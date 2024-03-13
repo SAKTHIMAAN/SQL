@@ -1,5 +1,6 @@
 --Customer LifeTime Value Analysis
---To solve the problem of Customer Lifetime Value (CLV) Analysis using SQL, follow the steps below.
+--To solve the problem of Customer Lifetime Value (CLV) Analysis using SQL, follow the steps below. 
+--Dataset:https://statso.io/customer-lifetime-value-analytics-case-study/
 
 SELECT CustomerID, SUM(TransactionAmount) AS TotalRevenue
 FROM Transactions
@@ -36,7 +37,7 @@ FROM CLVTable;
 /*
 RFM Analysis
 The next project idea on SQL for Data Science is RFM Analysis. RFM Analysis is a marketing analytics tool used to identify 
-a company’s most valuable customers by examining three specific purchasing behaviours:
+a company’s most valuable customers by examining three specific purchasing behaviours: Dataset:https://statso.io/rfm-analysis-case-study/
 
 how recently a customer has made a purchase (Recency),
 how often they make purchases (Frequency),
